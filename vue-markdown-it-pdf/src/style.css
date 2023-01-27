@@ -2,30 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
-h1 {
+.marked h1 {
   @apply text-4xl;
 }
 
-h2 {
+.marked h2 {
   @apply text-3xl;
 }
 
-h3 {
+.marked h3 {
   @apply text-2xl;
 }
 
-h4 {
+.marked h4 {
   @apply text-xl;
 }
 
-h5 {
+.marked h5 {
   @apply text-lg;
 }
 
-h6 {
+.marked h6 {
   @apply text-xs;
 }
 
-a {
+.marked a {
   @apply underline text-blue-500;
+}
+
+.marked span {
+  @apply text-pink-500;
+}
+
+.marked span .preview-backtick {
+  @apply text-black;
+}
+
+.marked hr {
+  margin-top: 10px;
+  border-bottom: 1px solid black;
 }

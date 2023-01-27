@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import * as marked from "marked";
-import markedLinkifyIt from "marked-linkify-it";
-marked.use(markedLinkifyIt({}, {}));
-let source = ref("# your markdown content");
-let activeReset = ref(false);
-let textareaReset = ref(false);
+import { ref } from "vue";
+import { marked } from "./marked";
+import DOMPurify from "dompurify";
+let source = ref<string>("# your markdown content");
+let activeReset = ref<boolean>(false);
+let textareaReset = ref<boolean>(false);
 function submitHandler(e: Event) {
   fetch("http://localhost:3000/save", {
     method: "POST",
@@ -52,7 +51,7 @@ function clickActiveReset() {
             class="bg-blue-400 text-white px-2 py-1"
             href="http://localhost:3000/hello.pdf"
             download
-            target="__blan"
+            target="_blank"
           >
             PDF
           </a>
@@ -66,7 +65,11 @@ function clickActiveReset() {
       </form>
     </div>
     <div class="w-1/2 px-4 py-1 bg-slate-100 h-full rounded-lg">
-      <div v-html="marked.parse(source)"></div>
+      <div
+        class="marked font-serif"
+        v-html="DOMPurify.sanitize(marked.parse(source))"
+      ></div>
+      <!-- <div>{{ marked.parse(source) }}</div> -->
     </div>
   </div>
 </template>
