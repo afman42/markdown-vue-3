@@ -13,3 +13,5 @@ How to use markdown: https://www.markdownguide.org/cheat-sheet/
   - Emoji
   - Tasklist,
   - Syntax Hightlighting
+
+When use right menu, selection text in the textarea and click the avalaible button whenever you like
