@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { RightMenu } from "./components";
 import { marked } from "./marked";
 import DOMPurify from "dompurify";
+import hljs from "highlight.js";
 let source = ref<string>("# your markdown content");
 let activeReset = ref<boolean>(false);
 let textareaReset = ref<boolean>(false);
+let toggleButton = ref<boolean>(false);
 let refTextarea = ref(null);
+let refMarked = ref(null);
 function selectionSliceTextarea(
   tagHtml: string,
   level?: 1 | 2 | 3 | 4 | 5 | 6
@@ -69,11 +72,19 @@ function clickActiveReset() {
   activeReset.value = false;
   textareaReset.value = false;
 }
+watch(source, (newVal) => {
+  if (refMarked.value.outerHTML.includes("<pre>")) {
+    refMarked.value.querySelectorAll("pre code").forEach((block) => {
+      hljs.highlightElement(block);
+    });
+  }
+  console.log(refMarked.value);
+});
 </script>
 
 <template>
   <div class="h-screen p-4 flex flex-row space-x-2">
-    <div class="w-1/2">
+    <div :class="[toggleButton ? 'w-full' : 'w-1/2']">
       <form
         method="POST"
         @submit.prevent="submitHandler"
@@ -100,6 +111,13 @@ function clickActiveReset() {
           >
             PDF
           </a>
+          <button
+            type="button"
+            @click="toggleButton = !toggleButton"
+            class="bg-yellow-400 text-white w-24 h-8"
+          >
+            Toggle
+          </button>
         </div>
         <textarea
           class="w-full p-2 h-full"
@@ -110,14 +128,16 @@ function clickActiveReset() {
         ></textarea>
       </form>
     </div>
-
-    <div class="w-1/2 h-full">
-      <RightMenu :selectionSliceTextarea="selectionSliceTextarea" />
-      <div
-        class="marked mt-2 px-2 py-1 font-serif bg-slate-100 h-full rounded-lg"
-        v-html="DOMPurify.sanitize(marked.parse(source))"
-      ></div>
-      <!-- <div>{{ marked.parse(source) }}</div> -->
-    </div>
+    <transition name="fade">
+      <div class="w-1/2 h-full" v-if="!toggleButton">
+        <RightMenu :selectionSliceTextarea="selectionSliceTextarea" />
+        <div
+          class="marked mt-2 px-2 py-1 font-serif bg-white h-full rounded-lg"
+          v-html="DOMPurify.sanitize(marked.parse(source))"
+          ref="refMarked"
+        ></div>
+        <!-- <div>{{ marked.parse(source) }}</div> -->
+      </div>
+    </transition>
   </div>
 </template>
