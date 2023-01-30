@@ -66,6 +66,7 @@ function submitHandler(e: Event) {
     .then((data) => {
       activeReset.value = data.fileSave;
       console.log(data);
+      textareaReset.value = false;
     });
 }
 function clickActiveReset() {
@@ -84,7 +85,7 @@ watch(source, (newVal) => {
 
 <template>
   <div class="h-screen p-4 flex flex-row space-x-2">
-    <div :class="[toggleButton ? 'w-full' : 'w-1/2']">
+    <div :class="[toggleButton ? 'w-full' : ' w-1/2']">
       <form
         method="POST"
         @submit.prevent="submitHandler"
@@ -99,8 +100,16 @@ watch(source, (newVal) => {
           >
             RESET
           </button>
-          <button v-else type="submit" class="bg-red-400 text-white w-24 h-8">
-            SAVE
+          <button
+            v-else
+            type="submit"
+            class="flex flex-row bg-red-400 text-white w-24 h-8 justify-center items-center"
+          >
+            <div
+              class="w-6 h-6 rounded-full animate-spin border-4 border-solid border-white border-t-transparent shadow-md"
+              v-if="textareaReset"
+            ></div>
+            <div v-else>SAVE</div>
           </button>
           <a
             :disabled="!activeReset"
